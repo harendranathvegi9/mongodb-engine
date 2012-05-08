@@ -115,6 +115,7 @@ class DatabaseWrapper(NonrelDatabaseWrapper):
         host = pop('HOST')
         port = pop('PORT')
         user = pop('USER')
+        hosts = pop('HOSTS')
         password = pop('PASSWORD')
         options = pop('OPTIONS', {})
 
@@ -129,7 +130,10 @@ class DatabaseWrapper(NonrelDatabaseWrapper):
             options[key.lower()] = options.pop(key)
 
         try:
-            self.connection = Connection(host=host, port=port, **options)
+            if hosts:
+                self.connection = Connection(hosts, **options)
+            else:
+                self.connection = Connection(host=host, port=port, **options)
             self.database = self.connection[db_name]
         except TypeError:
             exc_info = sys.exc_info()
