@@ -110,7 +110,11 @@ class DatabaseWrapper(NonrelDatabaseWrapper):
     def _connect(self):
         settings = copy.deepcopy(self.settings_dict)
         def pop(name, default=None):
-            return settings.pop(name) or default
+            try:
+                return settings.pop(name) or default
+            except KeyError:
+                return default;
+
         db_name = pop('NAME')
         host = pop('HOST')
         port = pop('PORT')
@@ -130,7 +134,7 @@ class DatabaseWrapper(NonrelDatabaseWrapper):
             options[key.lower()] = options.pop(key)
 
         try:
-            if hosts:
+            if hosts is not None:
                 self.connection = Connection(hosts, **options)
             else:
                 self.connection = Connection(host=host, port=port, **options)
