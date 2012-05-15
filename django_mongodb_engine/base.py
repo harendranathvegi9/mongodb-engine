@@ -6,6 +6,7 @@ from django.conf import settings
 
 from pymongo.connection import Connection
 from pymongo.collection import Collection
+from pymongo import ReplicaSetConnection 
 
 from .creation import DatabaseCreation
 from .utils import CollectionDebugWrapper
@@ -135,7 +136,7 @@ class DatabaseWrapper(NonrelDatabaseWrapper):
 
         try:
             if hosts is not None:
-                self.connection = Connection(hosts, **options)
+                self.connection=ReplicaSetConnection(hosts, **options); 
             else:
                 self.connection = Connection(host=host, port=port, **options)
             self.database = self.connection[db_name]
